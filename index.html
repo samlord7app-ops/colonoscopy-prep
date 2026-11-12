@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>保可淨 大腸鏡清腸說明查詢</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fs:22px;
+  --ink:#1b1b1b; --muted:#4a4a4a; --bg:#f6f4ee; --card:#fff;
+  --navy:#283a7a; --navy-2:#3d52a0; --red:#c62828; --orange:#d9531e;
+  --green:#2e7d32; --green-bg:#e8f3e6; --blue-bg:#e7eefb; --yellow:#fff3b0; --line:#d6d2c4;
+}
+html{font-size:var(--fs)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;line-height:1.6;-webkit-text-size-adjust:100%}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:860px;margin:0 auto;padding:0 16px 120px}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:var(--navy);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.top .in{max-width:860px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.top .hosp{font-size:.8rem;opacity:.9}
+.top h1{margin:0;font-size:1.15rem;font-weight:900;letter-spacing:.04em}
+.ctrls{display:flex;gap:8px;flex-wrap:wrap}
+.seg{display:flex;background:rgba(255,255,255,.15);border-radius:14px;padding:4px}
+.seg button{border:0;background:transparent;color:#fff;padding:8px 16px;border-radius:10px;font-weight:700;font-size:.9rem;min-height:48px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--navy)}
+
+h2{font-size:1.35rem;margin:0 0 .5rem;font-weight:900;color:var(--navy)}
+h3{font-size:1.15rem;margin:0 0 .4rem;font-weight:900}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:22px;margin:20px 0;box-shadow:0 2px 0 rgba(0,0,0,.04)}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.lead{color:var(--muted);margin:.2rem 0 0}
+
+/* speak button */
+.spk{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--navy);background:#fff;color:var(--navy);font-weight:900;border-radius:999px;padding:6px 18px;min-height:56px;cursor:pointer;font-size:.95rem;white-space:nowrap}
+.spk svg{width:28px;height:28px}
+.spk.playing{background:var(--navy);color:#fff}
+
+/* form */
+.field{margin:18px 0}
+.field > .lab{display:block;font-weight:900;margin-bottom:8px;font-size:1.05rem}
+.field > .lab .num{display:inline-grid;place-items:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--navy);color:#fff;margin-right:8px;font-size:.85em}
+.choices{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.choice{border:3px solid var(--line);background:#fff;border-radius:16px;padding:14px 16px;text-align:left;cursor:pointer;min-height:72px;font-weight:700}
+.choice small{display:block;font-weight:400;color:var(--muted);font-size:.8rem;line-height:1.4}
+.choice[aria-pressed="true"]{border-color:var(--navy);background:var(--blue-bg);box-shadow:inset 0 0 0 2px var(--navy)}
+.choice[aria-pressed="true"]::before{content:"✔ ";color:var(--navy)}
+.dt{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.dt input,.dt select{border:3px solid var(--line);border-radius:14px;padding:10px 14px;min-height:64px;background:#fff;font-size:1.1rem;font-weight:700}
+.dt input:focus,.dt select:focus,.choice:focus-visible,button:focus-visible{outline:4px solid #f0b400;outline-offset:2px}
+.go{display:block;width:100%;border:0;background:var(--orange);color:#fff;font-weight:900;font-size:1.25rem;border-radius:18px;min-height:76px;cursor:pointer;margin-top:10px;box-shadow:0 4px 0 #a33d12}
+.go:active{transform:translateY(2px);box-shadow:0 2px 0 #a33d12}
+.err{color:var(--red);font-weight:700;margin-top:8px;min-height:1em}
+.warn{background:#fdecea;border:3px solid var(--red);border-radius:16px;padding:14px 16px;margin-top:10px}
+.warn b{color:var(--red)}
+
+/* next banner */
+.next{background:var(--yellow);border:3px solid #e2b800;border-radius:20px;padding:18px 20px;margin:20px 0}
+.next .k{font-weight:900;color:#7a5a00}
+.next .t{font-size:1.5rem;font-weight:900;color:var(--red)}
+.next .w{font-size:1.15rem;font-weight:700}
+
+/* summary */
+.sum{background:var(--navy);color:#fff;border:0}
+.sum h2{color:#fff}
+.sum .big{font-size:1.6rem;font-weight:900;line-height:1.35}
+.sum .tag{display:inline-block;background:#fff;color:var(--navy);border-radius:10px;padding:2px 12px;font-weight:900;margin:6px 6px 0 0;font-size:.9rem}
+.sum .spk{border-color:#fff}
+
+/* prep steps */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-top:10px}
+.step{background:var(--blue-bg);border-radius:16px;padding:14px;text-align:center}
+.step .n{font-size:2.2rem;font-weight:900;color:var(--navy);line-height:1}
+.step svg{width:84px;height:84px;display:block;margin:6px auto}
+.step p{margin:0;font-weight:700}
+.step em{font-style:normal;color:var(--red)}
+.danger{display:flex;gap:14px;align-items:center;background:var(--red);color:#fff;border-radius:16px;padding:14px 18px;margin-top:14px;font-weight:900;font-size:1.1rem}
+.danger span.ic{font-size:2.2rem;line-height:1}
+
+/* timeline */
+.day{margin:24px 0 8px}
+.daylab{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:4px solid var(--navy);padding-bottom:6px}
+.daylab .d{font-size:1.4rem;font-weight:900;color:var(--navy)}
+.daylab .r{font-weight:900;color:#fff;background:var(--red);border-radius:10px;padding:0 12px}
+.item{display:grid;grid-template-columns:auto 1fr;gap:14px;padding:16px 0;border-bottom:2px dashed var(--line)}
+.item:last-child{border-bottom:0}
+.time{min-width:6.6em;text-align:center;background:var(--navy);color:#fff;border-radius:14px;padding:8px 6px;font-weight:900;align-self:start}
+.time .p{display:block;font-size:.8rem;opacity:.9}
+.time .h{display:block;font-size:1.45rem;line-height:1.2}
+.time.allday{background:var(--green)}
+.time.alert{background:var(--red)}
+.what h3{margin:0 0 4px}
+.what p{margin:4px 0}
+.what .note{color:var(--muted);font-size:.9rem}
+.cups{display:flex;flex-wrap:wrap;gap:4px;margin:6px 0}
+.cups svg{width:34px;height:40px}
+.row-act{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.done{border:3px solid var(--green);background:#fff;color:var(--green);font-weight:900;border-radius:999px;padding:6px 16px;min-height:52px;cursor:pointer;font-size:.9rem}
+.done[aria-pressed="true"]{background:var(--green);color:#fff}
+.item.isdone .what h3{text-decoration:line-through;opacity:.6}
+
+/* diet */
+.food{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.food div{background:var(--green-bg);border-radius:14px;padding:12px;text-align:center;font-weight:700}
+.food div .e{font-size:2.2rem;display:block;line-height:1.2}
+.food.no div{background:#fdecea}
+.ok{color:var(--green);font-weight:900}
+.ng{color:var(--red);font-weight:900}
+.kit{list-style:none;padding:0;margin:8px 0}
+.kit li{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.kit li b{min-width:6em;color:var(--navy)}
+
+ul.big{padding-left:1.2em;margin:.4rem 0}
+ul.big li{margin:.5rem 0}
+mark{background:var(--yellow);padding:0 4px;border-radius:4px}
+.tel{display:block;text-align:center;background:var(--orange);color:#fff;text-decoration:none;font-size:1.8rem;font-weight:900;border-radius:18px;padding:14px;margin:10px 0;letter-spacing:.05em}
+.small{font-size:.85rem;color:var(--muted)}
+.twtext{margin-top:10px;background:#fff8e1;border-left:6px solid #e2b800;border-radius:8px;padding:10px 14px;font-size:.95rem}
+.twtext b{color:#7a5a00}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#222;color:#fff;padding:14px 20px;border-radius:14px;max-width:92vw;font-weight:700;z-index:50;display:none;font-size:.95rem}
+.stopall{position:fixed;right:16px;bottom:16px;z-index:40;border:0;background:var(--red);color:#fff;font-weight:900;border-radius:999px;padding:12px 22px;min-height:60px;box-shadow:0 4px 12px rgba(0,0,0,.3);display:none;cursor:pointer}
+footer{margin-top:30px;font-size:.85rem;color:var(--muted);text-align:center}
+.hidden{display:none!important}
+@media (max-width:560px){
+  .card{padding:16px}
+  .item{grid-template-columns:1fr}
+  .time{justify-self:start;display:flex;gap:10px;align-items:baseline;padding:6px 14px}
+  .time .h{font-size:1.3rem}
+}
+/* ===== 影音說明播放器 ===== */
+.go.video{background:var(--green);box-shadow:0 4px 0 #1b5e20;margin-top:14px}
+.go.video:active{box-shadow:0 2px 0 #1b5e20}
+.player{position:fixed;inset:0;z-index:100;background:#0f1a3d;color:#fff;display:flex;flex-direction:column}
+.p-top{display:flex;align-items:center;gap:12px;padding:10px 14px}
+.p-prog{flex:1;height:12px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden}
+.p-prog i{display:block;height:100%;width:0;background:#ffb703;transition:width .4s}
+#pCount{font-weight:900;font-size:.9rem;white-space:nowrap}
+#pClose{border:0;background:#fff;color:var(--navy);font-weight:900;border-radius:12px;min-height:52px;padding:0 16px;cursor:pointer;font-size:.9rem}
+.p-stage{flex:1;display:flex;align-items:center;justify-content:center;padding:8px 14px;overflow:auto}
+.p-slide{background:#fff;color:var(--ink);border-radius:24px;max-width:760px;width:100%;padding:24px 20px;text-align:center;animation:pin .45s ease;margin:auto}
+@keyframes pin{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}
+.v-kicker{display:inline-block;background:var(--red);color:#fff;border-radius:10px;padding:2px 14px;font-weight:900}
+.v-sub{color:var(--muted);font-weight:700;margin-top:4px}
+.v-big{font-size:1.7rem;font-weight:900;color:var(--navy);margin:.3em 0;line-height:1.3}
+.v-time{font-size:2.6rem;font-weight:900;color:var(--red);line-height:1.2;margin:.15em 0}
+.v-time small{font-size:.5em;color:var(--navy);display:block}
+.v-ill svg{width:min(52vw,230px);height:auto}
+.v-num{font-size:3rem;font-weight:900;color:var(--navy);line-height:1}
+.v-body{font-size:1.15rem;margin-top:8px}
+.v-body .note{font-size:.95rem;color:var(--muted)}
+.p-slide .cups{justify-content:center}
+.p-slide .food{margin-top:14px}
+.p-slide .kit{text-align:left;max-width:460px;margin:10px auto}
+.p-slide ul.big{text-align:left;max-width:560px;margin:10px auto}
+.v-emoji{font-size:4rem;line-height:1.1}
+.v-danger{background:var(--red);color:#fff}
+.v-danger .v-big{color:#fff}
+.p-cap{background:rgba(0,0,0,.35);padding:12px 18px;font-size:1.05rem;font-weight:700;min-height:3.4em;text-align:center;line-height:1.5}
+.p-cap::before{content:"🔊 ";}
+.p-ctrl{display:flex;gap:10px;padding:10px 14px calc(14px + env(safe-area-inset-bottom));justify-content:center}
+.p-ctrl button{flex:1;max-width:240px;min-height:68px;border:0;border-radius:16px;font-weight:900;font-size:1rem;background:#fff;color:var(--navy);cursor:pointer}
+.p-ctrl button:disabled{opacity:.35}
+#pPlay{background:#ffb703;color:#1b1b1b}
+body.noscroll{overflow:hidden}
+.softnote{margin:8px 0 0;background:#fff3b0;border-left:6px solid #e2b800;border-radius:8px;padding:8px 12px;font-weight:700;color:#5c4300}
+@media (max-width:560px){ .v-time{font-size:2.1rem} .v-big{font-size:1.4rem} .p-slide{padding:18px 14px} .p-ctrl button{font-size:.9rem} }
+</style>
+</head>
+<body>
+
+<div class="top"><div class="in">
+  <div>
+    <div class="hosp">臺中榮民總醫院 埔里分院</div>
+    <h1>保可淨 大腸鏡清腸說明</h1>
+  </div>
+  <div class="ctrls">
+    <div class="seg" role="group" aria-label="字體大小">
+      <button data-fs="22" aria-pressed="true">大字</button>
+      <button data-fs="27" aria-pressed="false">特大字</button>
+    </div>
+  </div>
+</div></div>
+
+<main class="wrap">
+
+  <!-- ===== 輸入 ===== -->
+  <section class="card" id="formCard">
+    <div class="card-head">
+      <div>
+        <h2>請輸入您的檢查資料</h2>
+        <p class="lead">輸入後，會告訴您每個時間要做什麼。</p>
+      </div>
+      <button class="spk" data-say="intro"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽說明</button>
+    </div>
+
+    <div class="field">
+      <span class="lab"><span class="num">1</span>檢查種類（看單子上寫的）</span>
+      <div class="choices" data-group="type">
+        <button class="choice" data-v="painless" aria-pressed="false">無痛大腸鏡<small>有麻醉、睡著做</small></button>
+        <button class="choice" data-v="colon" aria-pressed="false">一般大腸鏡<small>只有做大腸鏡</small></button>
+        <button class="choice" data-v="combo" aria-pressed="false">一般大腸鏡＋胃鏡<small>大腸鏡和胃鏡一起做</small></button>
+        <button class="choice" data-v="painlessOut" aria-pressed="false">外院 無痛大腸鏡<small>在外院做無痛檢查（單子上寫「外院」）</small></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="lab"><span class="num">2</span>檢查日期</span>
+      <div class="dt"><input type="date" id="examDate" aria-label="檢查日期"></div>
+    </div>
+
+    <div class="field">
+      <span class="lab"><span class="num">3</span>檢查時間</span>
+      <div class="dt">
+        <select id="ampm" aria-label="上午或下午"><option value="am">上午</option><option value="pm">下午</option></select>
+        <select id="hh" aria-label="幾點"></select><span style="font-weight:900">點</span>
+        <select id="mm" aria-label="幾分"><option value="0">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option></select><span style="font-weight:900">分</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="lab"><span class="num">4</span>飲食方式</span>
+      <div class="choices" data-group="diet">
+        <button class="choice" data-v="kit" aria-pressed="false">有買低渣專用代餐<small>檢易餐點／刻利淨餐食</small></button>
+        <button class="choice" data-v="self" aria-pressed="false">自己控制飲食<small>沒有買代餐</small></button>
+      </div>
+    </div>
+
+    <div class="field">
+      <span class="lab"><span class="num">5</span>您有沒有下列疾病？</span>
+      <p class="lead" style="margin-bottom:8px">體液與電解質不平衡、腎功能不良、癲癇、心律不整、心衰竭、腎衰竭（需要限制喝水）</p>
+      <div class="choices" data-group="cond">
+        <button class="choice" data-v="no" aria-pressed="false">沒有</button>
+        <button class="choice" data-v="yes" aria-pressed="false">有</button>
+      </div>
+      <div class="warn hidden" id="condWarn"><b>⚠ 請先詢問醫師！</b>有這些疾病的人，喝水量與用藥可能要調整。請在檢查前先和醫師或藥師確認，再照下面的說明做。</div>
+    </div>
+
+    <button class="go" id="goBtn">產生我的清腸說明 ➜</button>
+    <button class="go video" id="videoBtn">▶ 產生影音說明</button>
+    <div class="err" id="err" role="alert"></div>
+  </section>
+
+  <!-- ===== 結果 ===== -->
+  <div id="result" class="hidden">
+
+    <section class="card sum">
+      <div class="card-head">
+        <h2>您的檢查</h2>
+        <button class="spk" data-say="summary"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽</button>
+      </div>
+      <div class="big" id="sumBig"></div>
+      <div id="sumTags"></div>
+      <div style="margin-top:12px"><button class="spk" id="readAll" style="background:#fff"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>全部唸給我聽</button>
+        <button class="spk" id="videoBtn2" style="background:#ffb703;border-color:#ffb703;color:#1b1b1b;margin-left:6px"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 5h11a2 2 0 0 1 2 2v2.5l4-2.5v10l-4-2.5V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/></svg>播放影音說明</button></div>
+    </section>
+
+    <div class="next hidden" id="nextBox" aria-live="polite"></div>
+
+    <section class="card" id="prepCard">
+      <div class="card-head">
+        <h2>保可淨藥水怎麼泡</h2>
+        <button class="spk" data-say="prep"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽</button>
+      </div>
+      <p class="lead">每次喝藥都照這 4 步驟，一次泡 <b>1 包</b>。</p>
+      <div class="steps">
+        <div class="step"><div class="n">1</div>
+          <svg viewBox="0 0 80 80"><path d="M18 14h44l-6 58H24z" fill="#fff" stroke="#283a7a" stroke-width="4"/><path d="M22 38h36l-4 32H26z" fill="#9cc3ff"/><text x="40" y="60" text-anchor="middle" font-size="12" font-weight="900" fill="#283a7a">150</text></svg>
+          <p>杯子裝<br><em>150 c.c. 冷水</em></p></div>
+        <div class="step"><div class="n">2</div>
+          <svg viewBox="0 0 80 80"><rect x="30" y="4" width="26" height="30" rx="3" fill="#e9eefc" stroke="#283a7a" stroke-width="3" transform="rotate(25 43 19)"/><circle cx="34" cy="40" r="2.5" fill="#888"/><circle cx="38" cy="45" r="2" fill="#888"/><path d="M18 44h44l-5 30H23z" fill="#9cc3ff" stroke="#283a7a" stroke-width="4"/></svg>
+          <p>倒入<br><em>1 包藥粉</em></p></div>
+        <div class="step"><div class="n">3</div>
+          <svg viewBox="0 0 80 80"><path d="M18 30h44l-5 44H23z" fill="#9cc3ff" stroke="#283a7a" stroke-width="4"/><path d="M46 6 36 66" stroke="#283a7a" stroke-width="5" stroke-linecap="round"/><path d="M26 50c6 6 22 6 28 0" fill="none" stroke="#283a7a" stroke-width="3" stroke-dasharray="4 3"/></svg>
+          <p>攪拌<br><em>3～5 分鐘</em></p></div>
+        <div class="step"><div class="n">4</div>
+          <svg viewBox="0 0 80 80"><circle cx="30" cy="34" r="20" fill="#ffd9b8" stroke="#283a7a" stroke-width="3"/><circle cx="24" cy="30" r="2.5" fill="#283a7a"/><path d="M40 40h22l-3 30H43z" fill="#9cc3ff" stroke="#283a7a" stroke-width="4" transform="rotate(-25 52 55)"/></svg>
+          <p><em>立刻</em><br>喝完藥水</p></div>
+      </div>
+      <div class="danger"><span class="ic">⚠</span><div>不可以直接吞藥粉！<br><span style="font-weight:700;font-size:.9rem">會造成食道灼傷</span></div></div>
+    </section>
+
+    <section class="card" id="schedCard">
+      <div class="card-head">
+        <h2>您的服藥時間表</h2>
+        <button class="spk" data-say="sched"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽全部時間</button>
+      </div>
+      <p class="lead">做完一項，可以按「✔ 我做完了」打勾。</p>
+      <div id="timeline"></div>
+    </section>
+
+    <section class="card" id="dietCard">
+      <div class="card-head">
+        <h2>檢查前的飲食</h2>
+        <button class="spk" data-say="diet"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽</button>
+      </div>
+      <div id="dietBody"></div>
+      <p class="small">※ 若您平常容易便秘或體質特殊，檢查前的飲食要更小心，可以先詢問醫護人員。</p>
+    </section>
+
+    <section class="card" id="medCard">
+      <div class="card-head">
+        <h2>平常吃的藥怎麼辦</h2>
+        <button class="spk" data-say="meds"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽</button>
+      </div>
+      <ul class="big">
+        <li>治療<b>便秘</b>的藥：<span class="ok">不要停，繼續吃</span>。</li>
+        <li><mark><b>降血糖藥</b></mark>、<mark><b>抗凝血劑</b></mark>：<span class="ng">請依照醫師指示停藥</span>。</li>
+        <li>其他的藥：在喝清腸藥<b>前 2 小時</b>，或清腸<b>後 6 小時</b>再吃。</li>
+      </ul>
+    </section>
+
+    <section class="card" id="helpCard">
+      <div class="card-head">
+        <h2>有問題請打電話</h2>
+        <button class="spk" data-say="help"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a7 7 0 0 1 0 13.4v2.1a9 9 0 0 0 0-17.6z"/></svg>聽</button>
+      </div>
+      <p>如果<b>晚上 9 點還沒有排便</b>，或是身體<b>很不舒服</b>，請打：</p>
+      <a class="tel" href="tel:0800060689">📞 0800-060-689</a>
+      <p class="small" style="text-align:center">24 小時諮詢專線（電話忙線請耐心等候，護理師會盡快回撥）<br>
+      手機請改撥付費電話：<br>
+      <b>0905-217-086</b>（早上 9:00～晚上 6:00）<br>
+      <b>0988-695-579</b>（晚上 6:00～早上 9:00）</p>
+      <div class="next" style="margin-bottom:0">
+        <div class="k">清腸成功的樣子</div>
+        <div class="w">最後排出來的應該是<b>淡黃色、清澈的液體</b>。因個人體質，會有所差異。</div>
+      </div>
+    </section>
+
+    <button class="go" id="editBtn" style="background:var(--navy);box-shadow:0 4px 0 #18245a">← 修改檢查資料</button>
+  </div>
+
+  <footer>
+    本頁依臺中榮總埔里分院「保可淨用法說明」及「大腸鏡檢前飲食控制說明」衛教單整理。<br>
+    實際用藥與飲食，請以醫師、藥師、護理師給您的指示為準。
+  </footer>
+</main>
+
+<button class="stopall" id="stopAll">■ 停止語音</button>
+
+<div class="player hidden" id="player" role="dialog" aria-modal="true" aria-label="影音說明">
+  <div class="p-top"><div class="p-prog"><i id="pBar"></i></div><span id="pCount"></span><button id="pClose">✕ 關閉</button></div>
+  <div class="p-stage"><div class="p-slide" id="pSlide"></div></div>
+  <div class="p-cap" id="pCap" aria-live="polite"></div>
+  <div class="p-ctrl">
+    <button id="pPrev">⏮ 上一段</button>
+    <button id="pPlay">⏸ 暫停</button>
+    <button id="pNext">下一段 ⏭</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===================================================================
+   院方可調整設定（若衛教內容改版，改這裡即可）
+   =================================================================== */
+const CONFIG = {
+  // 無痛：依上午/下午檢查，固定時間（24 小時制）
+  painless: {
+    am: { med2: [4,0],  water2: [[4,30],[5,0]],  fast: [5,0]  },
+    pm: { med2: [9,0],  water2: [[9,30],[10,0]], fast: [10,0] },
+    water1Pace: '約每 15 分鐘喝 1 杯', water1PaceTw: '大約十五分鐘啉一杯',
+    water2cc: 500
+  },
+  // 外院無痛：上午檢查時間依外院版衛教單（手寫修改）；下午沿用原印刷時間
+  painlessOut: {
+    am: { med2: [6,0],  water2: [[6,30],[7,0]],  fast: [7,0]  },
+    pm: { med2: [9,0],  water2: [[9,30],[10,0]], fast: [10,0] },
+    water1Pace: '約每半小時喝 1 杯', water1PaceTw: '大約半點鐘啉一杯',
+    water2cc: 500, softenerAm: '2 顆'
+  },
+  // 一般：依檢查時間往前推
+  colon: { medBeforeH: 4, water2cc: 750, softener: '2 顆', water1Pace: '約每半小時喝 1 杯', water1PaceTw: '大約半點鐘啉一杯' },
+  combo: { medBeforeH: 5, water2cc: 500, softener: '',     water1Pace: '約每半小時喝 1 杯', water1PaceTw: '大約半點鐘啉一杯' },
+  generalFastBeforeH: 5,
+  waterStartAfterMedMin: 30,   // 一般檢查：喝藥後幾分鐘開始喝水（衛教單上此欄留空由院方填寫）
+  // 台語錄音檔：若在 audio/tw/ 放入對應檔名的 mp3，按台語時會優先播放錄音
+  twAudioDir: 'audio/tw/'
+};
+
+/* =================== 狀態 =================== */
+const S = { type:null, diet:null, cond:null, lang:'zh' };
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* 時間選單 */
+(function(){
+  const hh = $('#hh');
+  for(let i=1;i<=12;i++){ const o=document.createElement('option'); o.value=i; o.textContent=i; hh.appendChild(o); }
+  hh.value = 8;
+})();
+
+/* 選項按鈕 */
+$$('.choices').forEach(g=>{
+  g.addEventListener('click', e=>{
+    const b = e.target.closest('.choice'); if(!b) return;
+    g.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false'));
+    S[g.dataset.group] = b.dataset.v;
+    if(g.dataset.group==='cond') $('#condWarn').classList.toggle('hidden', b.dataset.v!=='yes');
+  });
+});
+function setChoice(group, v){
+  const g = document.querySelector(`.choices[data-group="${group}"]`);
+  g.querySelectorAll('.choice').forEach(x=>x.setAttribute('aria-pressed', x.dataset.v===v?'true':'false'));
+  S[group]=v;
+  if(group==='cond') $('#condWarn').classList.toggle('hidden', v!=='yes');
+}
+
+/* 字體 / 語言切換 */
+$$('[data-fs]').forEach(b=>b.addEventListener('click',()=>{
+  document.documentElement.style.setProperty('--fs', b.dataset.fs+'px');
+  $$('[data-fs]').forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false'));
+  store.set('bp_fs', b.dataset.fs);
+}));
+$$('[data-lang]').forEach(b=>b.addEventListener('click',()=>{
+  S.lang = b.dataset.lang;
+  $$('[data-lang]').forEach(x=>x.setAttribute('aria-pressed', x===b?'true':'false'));
+  store.set('bp_lang', S.lang);
+  stopSpeech();
+  renderTwTexts();
+  toast(S.lang==='zh' ? '已切換為國語語音' : '已切換為台語語音');
+}));
+
+/* =================== 時間文字 =================== */
+const WK = '日一二三四五六';
+const TWNUM = ['十二','一','兩','三','四','五','六','七','八','九','十','十一','十二'];
+function period(h){
+  if(h<4)  return ['半夜','半暝'];
+  if(h<7)  return ['清晨','透早'];
+  if(h<11) return ['上午','早起'];
+  if(h<13) return ['中午','中晝'];
+  if(h<17) return ['下午','下晡'];
+  if(h<19) return ['傍晚','欲暗仔'];
+  return ['晚上','暗時'];
+}
+function tParts(d){
+  const h=d.getHours(), m=d.getMinutes(), h12=h%12||12, [pz,pt]=period(h);
+  const mm = String(m).padStart(2,'0');
+  return {
+    p: pz, hm: `${h12}:${mm}`,
+    zh: `${pz}${h12}點${m? m+'分':''}`,
+    tw: `${pt}${TWNUM[h12]}點${m===30?'半':(m? m+'分':'')}`
+  };
+}
+function dParts(d){
+  return { zh:`${d.getMonth()+1}月${d.getDate()}日（星期${WK[d.getDay()]}）`,
+           tw:`${d.getMonth()+1}月${d.getDate()}號，禮拜${d.getDay()===0?'日':WK[d.getDay()]}` };
+}
+function at(base, h, m, dayOffset=0){ const d=new Date(base); d.setDate(d.getDate()+dayOffset); d.setHours(h,m,0,0); return d; }
+function addMin(d, min){ return new Date(d.getTime()+min*60000); }
+function sameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
+
+/* =================== 杯子圖示 =================== */
+function cups(n){
+  const c = `<svg viewBox="0 0 34 40"><path d="M4 4h26l-3 33H7z" fill="#9cc3ff" stroke="#283a7a" stroke-width="2.5"/></svg>`;
+  return `<div class="cups" aria-label="${n} 杯">${c.repeat(n)}</div>`;
+}
+
+/* =================== 建立時間表 =================== */
+let PLAN = null;
+function buildPlan(){
+  const [y,mo,da] = $('#examDate').value.split('-').map(Number);
+  let h = Number($('#hh').value)%12; if($('#ampm').value==='pm') h+=12;
+  const m = Number($('#mm').value);
+  const exam = new Date(y, mo-1, da, h, m, 0, 0);
+  const d0 = new Date(y, mo-1, da);
+  const items = [];
+  const isPainless = S.type==='painless' || S.type==='painlessOut';
+  const cfg = CONFIG[S.type];
+  const self = S.diet==='self';
+
+  // ---- 檢查前兩天 ----
+  items.push({ id:'d2diet', day:-2, allday:true, icon:'🍚',
+    title: self ? '開始吃低渣飲食' : '一般正常飲食',
+    html: self ? '只可以吃：白稀飯、白麵條／白麵線、白吐司（去邊）、白饅頭、蒸蛋（不加料）、去皮的魚肉。<br><span class="note">詳細請看下方「檢查前的飲食」</span>'
+               : '正常吃，但<b class="ng">不要吃蔬菜水果、油炸食物、奶製品</b>。',
+    zh: self ? '整天，開始吃低渣飲食。只可以吃白稀飯、白麵條或白麵線、去邊的白吐司、白饅頭、不加料的蒸蛋、去皮的魚肉。'
+             : '整天，一般正常飲食，但不要吃蔬菜水果、油炸食物和奶製品。',
+    tw: self ? '規工，開始食低渣的物件。干焦會使食白糜、白麵抑是白麵線、切邊的白土司、白饅頭、無加料的蒸卵、去皮的魚肉。'
+             : '規工，照平常食，毋過菜蔬、果子、炸的物件、牛奶製品攏莫食。' });
+
+  // ---- 檢查前一天 ----
+  items.push({ id:'d1diet', day:-1, allday:true, icon:'🥣',
+    title: self ? '繼續吃低渣飲食（到傍晚 6 點）' : '只吃低渣專用代餐',
+    html: self ? '和前一天一樣，只吃低渣食物。<b>傍晚 6:00 喝藥後</b>，只能喝無渣流質。'
+               : '請依盒內指示：早上 1 包、點心 1 包、中午 12 點午餐、點心 1 包、晚上 5 點晚餐。',
+    zh: self ? '整天，和前一天一樣只吃低渣食物。傍晚6點喝藥以後，只能喝無渣流質。'
+             : '整天，只吃低渣專用代餐，請依照盒子裡的說明。早上1包，點心1包，中午12點午餐，點心1包，晚上5點晚餐。',
+    tw: self ? '規工，佮昨昏仝款干焦食低渣的物件。下昏六點啉藥了後，干焦會使啉無渣的湯水。'
+             : '規工，干焦食低渣專用的代餐，照盒仔內面的說明。早起一包，點心一包，中晝十二點食中晝頓，點心一包，下晡五點食暗頓。' });
+
+  const soft = at(d0,12,0,-1);
+  const twoTabs = S.type==='colon' || (S.type==='painlessOut' && exam.getHours()<12);
+  const softTxt = twoTabs ? '2 顆軟便劑' : '軟便劑';
+  items.push({ id:'soft', day:-1, t:soft, icon:'💊', title:`吃${softTxt}`,
+    html:`檢查前一日中午 12:00，服用${softTxt}。<p class="softnote">※ 醫師可能有不同用法，請依照醫師實際指示使用。</p>`,
+    zh:`吃${softTxt.replace(' ','')}。醫師可能有不同用法，請依照醫師實際指示使用。`, tw:`食${twoTabs?'兩粒':''}軟便劑。` });
+
+  const med1 = at(d0,18,0,-1);
+  items.push({ id:'med1', day:-1, t:med1, icon:'🥛', title:'喝第 1 包保可淨', key:true,
+    html:`1 包藥粉泡 150 c.c. 冷水，攪拌 3～5 分鐘後<b>立刻喝完</b>。${cups(1)}` + (self?'<p class="ng">喝藥後，只能喝無渣流質（運動飲料加水、清湯）。</p>':''),
+    zh:`喝第一包保可淨。一包藥粉泡150c.c.冷水，攪拌3到5分鐘後立刻喝完。` + (self?'喝藥以後，只能喝無渣流質。':''),
+    tw:`啉第一包保可淨。一包藥粉泡一百五十c.c.冷水，攪三到五分鐘隨啉了。` + (self?'啉藥了後，干焦會使啉無渣的湯水。':'') });
+
+  const w1 = at(d0,19,0,-1);
+  items.push({ id:'water1', day:-1, t:w1, tEndTxt:'睡前', icon:'💧', title:'陸續喝水 2000 c.c.',
+    html:`從晚上 7 點到睡前，喝完 <b>2000 c.c.</b>（250 c.c. 一杯，共 <b>8 杯</b>）。${cups(8)}<span class="note">${cfg.water1Pace}。</span>`,
+    zh:`陸續喝水2000c.c.，250c.c.一杯，總共8杯，${cfg.water1Pace}。`,
+    tw:`暗時七點到欲睏進前，沓沓仔啉水兩千c.c.，一杯兩百五，總共八杯，${cfg.water1PaceTw}。` });
+
+  const c21 = at(d0,21,0,-1);
+  items.push({ id:'check21', day:-1, t:c21, icon:'📞', alert:true, title:'確認有沒有排便',
+    html:'如果<b>還沒排便</b>或<b>很不舒服</b>，請打 <b>0800-060-689</b>。',
+    zh:'如果還沒有排便，或是很不舒服，請打0800-060-689。',
+    tw:'若是猶未放屎，抑是真艱苦，請敲0800-060-689。' });
+
+  // ---- 檢查當天 ----
+  let med2, wS, wE, fast, w2cc;
+  if(isPainless){
+    const k = exam.getHours()<12 ? 'am':'pm', c = cfg[k];
+    med2 = at(d0,...c.med2); wS = at(d0,...c.water2[0]); wE = at(d0,...c.water2[1]); fast = at(d0,...c.fast); w2cc = cfg.water2cc;
+  } else {
+    med2 = addMin(exam, -cfg.medBeforeH*60);
+    wS = addMin(med2, CONFIG.waterStartAfterMedMin); wE = null;
+    fast = addMin(exam, -CONFIG.generalFastBeforeH*60);
+    w2cc = cfg.water2cc;
+  }
+  const nC = w2cc/250;
+
+  if(!isPainless){
+    items.push({ id:'fast', day:0, t:fast, icon:'🚫', alert:true, title:'開始空腹（禁食）',
+      html:'從這個時間開始<b class="ng">不能吃東西、不能喝其他飲料</b>。<br><span class="note">只有下面的保可淨藥水和規定的水要照常喝完。</span>',
+      zh:'開始空腹，不能吃東西，也不能喝其他飲料。只有保可淨藥水和規定的水要照常喝完。',
+      tw:'開始空腹，毋通食物件，嘛毋通啉別項飲料。干焦保可淨藥水佮規定的水愛照常啉了。' });
+  }
+  items.push({ id:'med2', day:0, t:med2, icon:'🥛', title:'喝第 2 包保可淨', key:true,
+    html:`同樣 1 包泡 150 c.c. 冷水，攪拌後<b>立刻喝完</b>。${cups(1)}`,
+    zh:'喝第二包保可淨。同樣一包泡150c.c.冷水，攪拌後立刻喝完。',
+    tw:'啉第二包保可淨。仝款一包泡一百五十c.c.冷水，攪好隨啉了。' });
+  items.push({ id:'water2', day:0, t:wS, tEnd:wE, icon:'💧', title:`陸續喝水 ${w2cc} c.c.`,
+    html:`喝 <b>${w2cc} c.c.</b>（250 c.c. 一杯，共 <b>${nC} 杯</b>）${wE? '，<b>'+tParts(wE).p+' '+tParts(wE).hm+'</b> 前喝完':'，在檢查前陸續喝完'}。${cups(nC)}`,
+    zh:`陸續喝水${w2cc}c.c.，共${nC}杯${wE? '，'+tParts(wE).zh+'前喝完':'，在檢查前陸續喝完'}。`,
+    tw:`沓沓仔啉水${w2cc}c.c.，總共${['','一','兩','三','四'][nC]}杯${wE? '，'+tParts(wE).tw+'進前啉了':'，佇檢查進前啉了'}。` });
+  if(isPainless){
+    items.push({ id:'fast', day:0, t:fast, icon:'🚫', alert:true, title:'開始空腹（禁食、禁水）',
+      html:'從這個時間開始，<b class="ng">什麼都不能吃、不能喝，連水也不行</b>。',
+      zh:'開始空腹，什麼都不能吃，也不能喝，連水都不行。',
+      tw:'開始空腹，啥物攏毋通食，嘛毋通啉，連水都袂使。' });
+  }
+  items.push({ id:'exam', day:0, t:exam, icon:'🏥', title:'檢查時間', key:true,
+    html:'請準時到醫院報到。',
+    zh:'檢查時間，請準時到醫院報到。', tw:'檢查時間，請照時到病院報到。' });
+
+  items.forEach(it=>{ if(it.t){ it.day = Math.round((new Date(it.t.getFullYear(),it.t.getMonth(),it.t.getDate()) - d0)/86400000); }});
+  items.sort((a,b)=> a.day-b.day || (a.allday?-1:b.allday?1:0) || (a.t-b.t));
+  return { exam, d0, items, isPainless };
+}
+
+/* =================== 畫面 =================== */
+const DAYNAME = { '-2':['檢查前兩天','檢查前兩工'], '-1':['檢查前一天','檢查前一工'], '0':['檢查當天','檢查彼工'] };
+const typeName = { painless:['無痛大腸鏡','無痛大腸鏡'], colon:['一般大腸鏡','一般大腸鏡'], combo:['一般大腸鏡加胃鏡','一般大腸鏡佮胃鏡'], painlessOut:['外院無痛大腸鏡','外院無痛大腸鏡'] };
+
+function render(){
+  const P = PLAN, ex = tParts(P.exam), exd = dParts(P.exam);
+  $('#sumBig').innerHTML = `${exd.zh}<br>${ex.p} ${ex.hm}`;
+  $('#sumTags').innerHTML = `<span class="tag">${typeName[S.type][0]}</span><span class="tag">${S.diet==='kit'?'低渣專用代餐':'自主飲食控制'}</span>` + (S.cond==='yes'?'<span class="tag" style="color:#c62828">⚠ 有特殊疾病，請先問醫師</span>':'');
+
+  const done = store.get('bp_done_'+$('#examDate').value) || {};
+  let html='', curDay=null;
+  P.items.forEach(it=>{
+    if(it.day!==curDay){
+      if(curDay!==null) html+='</div>';
+      curDay = it.day;
+      const dd = new Date(P.d0); dd.setDate(dd.getDate()+it.day);
+      html += `<div class="day"><div class="daylab"><span class="r">${DAYNAME[it.day]?DAYNAME[it.day][0]:''}</span><span class="d">${dParts(dd).zh}</span></div>`;
+    }
+    let tb;
+    if(it.allday) tb = `<div class="time allday"><span class="p">全天</span><span class="h">${it.icon}</span></div>`;
+    else { const tp=tParts(it.t); tb = `<div class="time ${it.alert?'alert':''}"><span class="p">${tp.p}</span><span class="h">${tp.hm}</span>${it.tEndTxt?`<span class="p">～${it.tEndTxt}</span>`:it.tEnd?`<span class="p">～${tParts(it.tEnd).hm}</span>`:''}</div>`; }
+    html += `<div class="item ${done[it.id]?'isdone':''}" data-id="${it.id}">${tb}<div class="what">
+      <h3>${it.allday?'':it.icon+' '}${it.title}</h3><div>${it.html}</div>
+      <div class="row-act">
+        <button class="spk" data-item="${it.id}"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg>聽</button>
+        ${it.id!=='exam'?`<button class="done" data-done="${it.id}" aria-pressed="${done[it.id]?'true':'false'}">✔ 我做完了</button>`:''}
+      </div>
+      <div class="twtext ${S.lang==='tw'?'':'hidden'}" data-twfor="${it.id}"><b>台語：</b>${itemSpeech(it,'tw')}</div>
+    </div></div>`;
+  });
+  html+='</div>';
+  $('#timeline').innerHTML = html;
+  renderDiet();
+  renderTwTexts();
+  renderNext();
+}
+
+function itemSpeech(it, lang){
+  let when = '';
+  if(it.t){
+    const dd = dParts(it.t), tp = tParts(it.t);
+    when = lang==='zh' ? `${DAYNAME[it.day][0]}，${dd.zh}，${tp.zh}` : `${DAYNAME[it.day][1]}，${dd.tw}，${tp.tw}`;
+    if(it.tEndTxt) when += lang==='zh' ? '到睡前' : '';
+    else if(it.tEnd) when += lang==='zh' ? `到${tParts(it.tEnd).zh}` : `到${tParts(it.tEnd).tw}`;
+    when += '，';
+  } else {
+    when = (lang==='zh'? DAYNAME[it.day][0] : DAYNAME[it.day][1]) + '，';
+  }
+  return when + it[lang];
+}
+
+function renderDiet(){
+  const self = S.diet==='self';
+  let h='';
+  if(self){
+    h += `<h3>檢查前兩天、前一天（傍晚 6 點前）</h3>
+      <p class="ok">✔ 只可以吃下面這些食物：</p>
+      <div class="food">
+        <div><span class="e">🍚</span>白稀飯</div><div><span class="e">🍜</span>白麵條、白麵線</div>
+        <div><span class="e">🍞</span>白吐司<br><span class="ng" style="font-size:.85rem">（要去邊）</span></div><div><span class="e">⚪</span>白饅頭</div>
+        <div><span class="e">🥚</span>蒸蛋<br><span style="font-size:.85rem">（不加料）</span></div><div><span class="e">🐟</span>去皮的魚肉</div>
+      </div>
+      <p class="ng">✘ 其他食物都不要吃。</p>
+      <h3 style="margin-top:18px">檢查前一天 傍晚 6:00 喝藥以後</h3>
+      <p class="ok">✔ 只可以喝「無渣流質」：</p>
+      <div class="food">
+        <div><span class="e">🧃</span>運動飲料<br>＋白開水 1：1</div>
+        <div><span class="e">🥣</span>清澈菜湯<br><span class="ng" style="font-size:.85rem">（菜不能吃）</span></div>
+        <div><span class="e">🍲</span>清澈魚湯／肉湯<br><span class="ng" style="font-size:.85rem">（魚肉、瘦肉不能吃）</span></div>
+      </div>`;
+  } else {
+    h += `<h3>檢查前兩天</h3>
+      <p>一般正常飲食，但要避免：</p>
+      <div class="food no">
+        <div><span class="e">🥬</span>蔬菜水果</div><div><span class="e">🍗</span>油炸食物</div><div><span class="e">🥛</span>奶製品</div>
+      </div>
+      <h3 style="margin-top:18px">檢查前一天：只吃低渣專用代餐</h3>
+      <p>（檢易餐點／刻利淨餐食，<b>請依盒內指示食用</b>）</p>
+      <ul class="kit">
+        <li><b>早上</b>檢易餐點 1 包</li>
+        <li><b>點心</b>檢易餐點 1 包</li>
+        <li><b>中午 12 點</b>午餐（依盒內指示）</li>
+        <li><b>點心</b>檢易餐點 1 包</li>
+        <li><b>晚上 5 點</b>晚餐（依盒內指示）</li>
+      </ul>`;
+  }
+  h += `<div class="twtext ${S.lang==='tw'?'':'hidden'}" data-twfor="diet"><b>台語：</b>${SAY.diet().tw}</div>`;
+  $('#dietBody').innerHTML = h;
+}
+
+function renderTwTexts(){
+  $$('[data-twfor]').forEach(el=>el.classList.toggle('hidden', S.lang!=='tw'));
+  // 固定卡片的台語字幕
+  ['prep','meds','help'].forEach(k=>{
+    const card = $('#'+k+'Card'); if(!card) return;
+    let el = card.querySelector('.twtext.static');
+    if(!el){ el=document.createElement('div'); el.className='twtext static'; card.appendChild(el); }
+    el.innerHTML = '<b>台語：</b>'+SAY[k]().tw;
+    el.classList.toggle('hidden', S.lang!=='tw');
+  });
+}
+
+function renderNext(){
+  const now = new Date(), box = $('#nextBox');
+  const nx = PLAN.items.find(it=>it.t && (it.tEnd||it.t) > now && !(it.t<now && !it.tEnd));
+  if(!nx){ box.classList.add('hidden'); return; }
+  const tp = tParts(nx.t), dd = dParts(nx.t);
+  const dayWord = sameDay(nx.t, now) ? '今天' : (sameDay(nx.t, new Date(now.getTime()+86400000)) ? '明天' : dd.zh);
+  box.innerHTML = `<div class="k">⏰ 您的下一步</div><div class="t">${dayWord} ${tp.p} ${tp.hm}</div><div class="w">${nx.icon} ${nx.title}</div>`;
+  box.classList.remove('hidden');
+}
+
+/* =================== 語音內容 =================== */
+const SAY = {
+  intro:()=>({ zh:'請依序輸入：第一，檢查種類。第二，檢查日期。第三，檢查時間。第四，飲食方式。第五，有沒有特殊疾病。然後按下橘色的按鈕，產生您的清腸說明。',
+               tw:'請照順序輸入：第一，檢查的種類。第二，檢查的日子。第三，檢查的時間。第四，食物按怎食。第五，有無特別的病。了後揤橘色的按鈕，就會出現你的清腸說明。' }),
+  summary:()=>{ const e=PLAN.exam, d=dParts(e), t=tParts(e);
+    return { zh:`您的檢查是${typeName[S.type][0]}，時間是${d.zh}，${t.zh}。`,
+             tw:`你欲做的檢查是${typeName[S.type][1]}，時間是${d.tw}，${t.tw}。` }; },
+  prep:()=>({ zh:'保可淨泡製方法。第一，杯子裝150c.c.冷水。第二，倒入一包藥粉。第三，攪拌3到5分鐘。第四，立刻喝完藥水。注意！不可以直接吞藥粉，會造成食道灼傷。',
+              tw:'保可淨按呢泡。第一，杯仔貯一百五十c.c.的冷水。第二，共一包藥粉倒入去。第三，攪三到五分鐘。第四，攪好隨共藥水啉了。注意！毋通直接共藥粉吞落去，會傷著食道。' }),
+  sched:()=>({ zh: PLAN.items.map(it=>itemSpeech(it,'zh')).join(' '), tw: PLAN.items.map(it=>itemSpeech(it,'tw')).join(' ') }),
+  diet:()=> S.diet==='self'
+    ? { zh:'檢查前兩天開始，到前一天傍晚6點以前，只可以吃白稀飯、白麵條或白麵線、去邊的白吐司、白饅頭、不加料的蒸蛋、去皮的魚肉，其他食物都不要吃。檢查前一天傍晚6點喝藥以後，只可以喝無渣流質：運動飲料加白開水1比1、清澈的菜湯，菜不能吃、清澈的魚湯或肉湯，魚肉和瘦肉不能吃。',
+        tw:'檢查前兩工開始，到前一工下昏六點進前，干焦會使食白糜、白麵抑是白麵線、切邊的白土司、白饅頭、無加料的蒸卵、去皮的魚肉，其他的物件攏莫食。前一工下昏六點啉藥了後，干焦會使啉無渣的湯水：運動飲料加滾水一比一、清的菜湯，菜毋通食、清的魚湯抑是肉湯，魚肉佮瘦肉毋通食。' }
+    : { zh:'檢查前兩天，一般正常飲食，但要避免蔬菜水果、油炸食物和奶製品。檢查前一天，只吃低渣專用代餐，請依照盒子裡的說明：早上1包，點心1包，中午12點午餐，點心1包，晚上5點晚餐。',
+        tw:'檢查前兩工，照平常食，毋過菜蔬、果子、炸的物件、牛奶製品攏莫食。檢查前一工，干焦食低渣專用的代餐，照盒仔內面的說明：早起一包，點心一包，中晝十二點食中晝頓，點心一包，下晡五點食暗頓。' },
+  meds:()=>({ zh:'平常吃的藥。治療便秘的藥，不要停，要繼續吃。降血糖藥和抗凝血劑，請依照醫師指示停藥。其他的藥，在喝清腸藥前2小時，或清腸後6小時再吃。',
+              tw:'平常食的藥仔。治便秘的藥，毋通停，愛繼續食。降血糖的藥佮抗凝血的藥，愛照醫生的指示停藥。其他的藥仔，愛佇啉清腸藥進前兩點鐘，抑是清腸了後六點鐘才食。' }),
+  help:()=>({ zh:'如果晚上9點還沒有排便，或是身體很不舒服，請打24小時諮詢專線，0800-060-689。清腸成功的話，最後排出來的是淡黃色、清澈的液體，因個人體質會有所差異。',
+              tw:'若是暗時九點猶未放屎，抑是身軀真艱苦，請敲二十四點鐘的諮詢專線，0800-060-689。清腸若成功，上尾放出來的是淡黃色、清清的水。' })
+};
+
+/* =================== 語音播放 =================== */
+let curBtn=null, curAudio=null, voices=[];
+function loadVoices(){ try{ voices = speechSynthesis.getVoices(); }catch(e){ voices=[]; } }
+try{ loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }catch(e){}
+function pickVoice(lang){
+  if(lang==='tw') return voices.find(v=>/^nan/i.test(v.lang)) || null;
+  return voices.find(v=>/zh[-_]TW/i.test(v.lang)) || voices.find(v=>/zh[-_](Hant|HK)/i.test(v.lang)) || voices.find(v=>/^zh/i.test(v.lang)) || null;
+}
+function stopSpeech(){
+  try{ speechSynthesis.cancel(); }catch(e){}
+  if(curAudio){ curAudio.pause(); curAudio=null; }
+  if(curBtn) curBtn.classList.remove('playing');
+  curBtn=null; $('#stopAll').style.display='none';
+}
+function finish(){ if(curBtn) curBtn.classList.remove('playing'); curBtn=null; $('#stopAll').style.display='none'; }
+
+function ttsSpeak(text, lang){
+  if(!('speechSynthesis' in window)){ toast('這個裝置不支援語音朗讀'); finish(); return; }
+  const v = pickVoice(lang);
+  if(lang==='tw' && !v){
+    toast('此裝置沒有台語語音，台語說明文字已顯示在畫面上（院方可放入台語錄音檔）');
+    finish(); return;
+  }
+  // 長句切段，避免部分手機中斷
+  const parts = (text.match(/[^。！？]+[。！？]?/g) || [text]).filter(s=>s.trim());
+  parts.forEach((p,i)=>{
+    const u = new SpeechSynthesisUtterance(p);
+    u.lang = lang==='tw' ? (v?v.lang:'nan-TW') : 'zh-TW';
+    if(v) u.voice = v;
+    u.rate = 0.82; u.pitch = 1;
+    if(i===parts.length-1){ u.onend = finish; u.onerror = finish; }
+    speechSynthesis.speak(u);
+  });
+}
+
+function play(btn, key, text){
+  if(curBtn===btn){ stopSpeech(); return; }
+  stopSpeech();
+  curBtn = btn; btn.classList.add('playing'); $('#stopAll').style.display='block';
+  if(S.lang==='tw'){
+    // 先試院方錄音檔
+    const a = new Audio(CONFIG.twAudioDir + key + '.mp3');
+    curAudio = a;
+    a.onended = finish;
+    a.onerror = ()=>{ if(curAudio===a){ curAudio=null; ttsSpeak(text,'tw'); } };
+    a.play().catch(()=>{ if(curAudio===a){ curAudio=null; ttsSpeak(text,'tw'); } });
+  } else {
+    ttsSpeak(text,'zh');
+  }
+}
+
+document.addEventListener('click', e=>{
+  const b = e.target.closest('.spk'); if(!b) return;
+  if(b.id==='readAll'){
+    const keys=['summary','prep','sched','diet','meds','help'];
+    const txt = keys.map(k=>SAY[k]()[S.lang]).join(' ');
+    play(b, 'all', txt); return;
+  }
+  if(b.dataset.say){
+    if(b.dataset.say!=='intro' && !PLAN) return;
+    play(b, b.dataset.say, SAY[b.dataset.say]()[S.lang]); return;
+  }
+  if(b.dataset.item){
+    const it = PLAN.items.find(x=>x.id===b.dataset.item);
+    play(b, 'item-'+it.id, itemSpeech(it, S.lang));
+  }
+});
+$('#stopAll').addEventListener('click', stopSpeech);
+
+/* 打勾 */
+document.addEventListener('click', e=>{
+  const b = e.target.closest('.done'); if(!b) return;
+  const key='bp_done_'+$('#examDate').value, done = store.get(key)||{};
+  done[b.dataset.done] = !done[b.dataset.done];
+  store.set(key, done);
+  b.setAttribute('aria-pressed', done[b.dataset.done]?'true':'false');
+  b.closest('.item').classList.toggle('isdone', !!done[b.dataset.done]);
+});
+
+/* =================== 送出 =================== */
+function generate(){
+  const miss=[];
+  if(!S.type) miss.push('檢查種類');
+  if(!$('#examDate').value) miss.push('檢查日期');
+  if(!S.diet) miss.push('飲食方式');
+  if(!S.cond) miss.push('有沒有特殊疾病');
+  if(miss.length){ $('#err').textContent='請選擇：'+miss.join('、'); return false; }
+  $('#err').textContent='';
+  PLAN = buildPlan();
+  store.set('bp_input', { type:S.type, diet:S.diet, cond:S.cond, date:$('#examDate').value, ampm:$('#ampm').value, hh:$('#hh').value, mm:$('#mm').value });
+  render();
+  $('#formCard').classList.add('hidden');
+  $('#result').classList.remove('hidden');
+  window.scrollTo({top:0});
+  return true;
+}
+$('#goBtn').addEventListener('click', generate);
+$('#videoBtn').addEventListener('click', ()=>{ if(generate()) openPlayer(); });
+$('#videoBtn2').addEventListener('click', openPlayer);
+
+/* =================== 影音說明 =================== */
+function buildSlides(){
+  const P = PLAN, ex = tParts(P.exam), exd = dParts(P.exam), tn = typeName[S.type][0];
+  const out = [];
+  out.push({ h:`<div class="v-kicker">您的清腸說明</div><div class="v-big">${tn}</div><div class="v-time">${exd.zh}<small>${ex.p}</small>${ex.hm}</div>`,
+    say:`您好，這是您的清腸說明。您的檢查是${tn}，時間是${exd.zh}，${ex.zh}。請跟著畫面，一步一步做。` });
+  if(S.cond==='yes') out.push({ cls:'v-danger', h:`<div class="v-emoji">⚠️</div><div class="v-big">請先詢問醫師</div><div class="v-body">您有特殊疾病，喝水量與用藥可能要調整。<br>請先和醫師或藥師確認。</div>`,
+    say:'您有特殊疾病，喝水量和用藥可能要調整。請先和醫師或藥師確認，再照著做。' });
+
+  // 泡藥
+  const st = $$('#prepCard .step svg').map(x=>x.outerHTML);
+  out.push({ h:`<div class="v-kicker">保可淨怎麼泡</div><div class="v-big">每次喝藥都照這 4 個步驟</div><div class="v-emoji">🥛</div><div class="v-body">一次泡 <b>1 包</b></div>`,
+    say:'首先，教您保可淨怎麼泡。每次喝藥都照這4個步驟，一次泡1包。' });
+  [['杯子裝 <b class="ng">150 c.c. 冷水</b>','第一步，杯子裝150c.c.的冷水。'],
+   ['倒入 <b class="ng">1 包藥粉</b>','第二步，倒入一包藥粉。'],
+   ['攪拌 <b class="ng">3～5 分鐘</b>','第三步，攪拌3到5分鐘。'],
+   ['<b class="ng">立刻</b>喝完藥水','第四步，立刻把藥水喝完。']].forEach((x,i)=>{
+    out.push({ h:`<div class="v-kicker">泡藥 第 ${i+1} 步</div><div class="v-num">${i+1}</div><div class="v-ill">${st[i]||''}</div><div class="v-big">${x[0]}</div>`, say:x[1] });
+  });
+  out.push({ cls:'v-danger', h:`<div class="v-emoji">⚠️</div><div class="v-big">不可以直接吞藥粉！</div><div class="v-body">會造成食道灼傷</div>`, say:'注意！不可以直接吞藥粉，會造成食道灼傷。' });
+
+  // 飲食
+  const dd2 = new Date(P.d0); dd2.setDate(dd2.getDate()-2);
+  const dd1 = new Date(P.d0); dd1.setDate(dd1.getDate()-1);
+  if(S.diet==='self'){
+    out.push({ h:`<div class="v-kicker">檢查前兩天</div><div class="v-sub">${dParts(dd2).zh} 起</div><div class="v-big">只可以吃這些食物</div>
+      <div class="food"><div><span class="e">🍚</span>白稀飯</div><div><span class="e">🍜</span>白麵條、白麵線</div><div><span class="e">🍞</span>白吐司<br><span class="ng" style="font-size:.85rem">（去邊）</span></div><div><span class="e">⚪</span>白饅頭</div><div><span class="e">🥚</span>蒸蛋<br><span style="font-size:.85rem">（無加料）</span></div><div><span class="e">🐟</span>去皮的魚肉</div></div>`,
+      say:`從檢查前兩天，${dParts(dd2).zh}開始，只可以吃這些食物：白稀飯、白麵條或白麵線、去邊的白吐司、白饅頭、無加料的蒸蛋、去皮的魚肉。其他食物都不要吃。` });
+    out.push({ h:`<div class="v-kicker">檢查前一天 傍晚 6:00 喝藥後</div><div class="v-sub">${dParts(dd1).zh}</div><div class="v-big">只可以喝無渣流質</div>
+      <div class="food"><div><span class="e">🧃</span>運動飲料<br>＋白開水 1：1</div><div><span class="e">🥣</span>澄清菜湯<br><span class="ng" style="font-size:.85rem">（菜不能吃）</span></div><div><span class="e">🍲</span>澄清魚湯／肉湯<br><span class="ng" style="font-size:.85rem">（魚肉、瘦肉不能吃）</span></div></div>`,
+      say:'檢查前一天，傍晚6點喝藥以前，一樣只吃剛才那些食物。傍晚6點喝藥以後，只可以喝無渣流質：運動飲料加白開水1比1、澄清的菜湯，菜不能吃、澄清的魚湯或肉湯，魚肉和瘦肉不能吃。' });
+  } else {
+    out.push({ h:`<div class="v-kicker">檢查前兩天</div><div class="v-sub">${dParts(dd2).zh}</div><div class="v-big">一般正常飲食，但要避免</div>
+      <div class="food no"><div><span class="e">🥬</span>蔬菜水果</div><div><span class="e">🍗</span>油炸食物</div><div><span class="e">🥛</span>奶製品</div></div>`,
+      say:`檢查前兩天，${dParts(dd2).zh}，一般正常飲食，但要避免蔬菜水果、油炸食物和奶製品。` });
+    out.push({ h:`<div class="v-kicker">檢查前一天</div><div class="v-sub">${dParts(dd1).zh}</div><div class="v-big">只吃低渣專用代餐</div><div class="v-sub">請依盒內指示食用</div>
+      <ul class="kit"><li><b>早上</b>檢易餐點 1 包</li><li><b>點心</b>檢易餐點 1 包</li><li><b>中午 12 點</b>午餐</li><li><b>點心</b>檢易餐點 1 包</li><li><b>晚上 5 點</b>晚餐</li></ul>`,
+      say:`檢查前一天，${dParts(dd1).zh}，只吃低渣專用代餐，請依照盒子裡的指示。早上檢易餐點1包，點心1包，中午12點午餐，點心1包，晚上5點晚餐。` });
+  }
+
+  // 時間表
+  out.push({ h:`<div class="v-kicker">服藥時間表</div><div class="v-emoji">⏰</div><div class="v-big">接下來，<br>告訴您每個時間要做什麼</div>`, say:'接下來，告訴您每個時間要做什麼。' });
+  P.items.filter(it=>it.t).forEach(it=>{
+    const tp = tParts(it.t), dd = new Date(P.d0); dd.setDate(dd.getDate()+it.day);
+    const end = it.tEndTxt ? `～${it.tEndTxt}` : it.tEnd ? `～${tParts(it.tEnd).hm}` : '';
+    out.push({ h:`<div class="v-kicker">${DAYNAME[it.day][0]}</div><div class="v-sub">${dParts(dd).zh}</div>
+      <div class="v-time"><small>${tp.p}</small>${tp.hm}${end?`<small>${end}</small>`:''}</div>
+      <div class="v-big">${it.icon} ${it.title}</div><div class="v-body">${it.html}</div>`,
+      say: itemSpeech(it,'zh') });
+  });
+
+  out.push({ h:`<div class="v-kicker">平常吃的藥</div><ul class="big">
+      <li>治療<b>便秘</b>的藥：<span class="ok">不要停，繼續吃</span></li>
+      <li><mark><b>降血糖藥</b></mark>、<mark><b>抗凝血劑</b></mark>：<span class="ng">依醫師指示停藥</span></li>
+      <li>其他的藥：喝清腸藥<b>前 2 小時</b>，或清腸<b>後 6 小時</b>再吃</li></ul>`,
+    say: SAY.meds().zh });
+  out.push({ h:`<div class="v-kicker">有問題請打電話</div><div class="v-body">晚上 9 點還沒排便，或很不舒服</div><div class="v-time" style="font-size:2.1rem">📞 0800-060-689</div><div class="v-sub">24 小時諮詢專線</div>`,
+    say:'如果晚上9點還沒有排便，或是身體很不舒服，請打24小時諮詢專線，0800-060-689。' });
+  out.push({ h:`<div class="v-emoji">🙏</div><div class="v-big">祝您檢查順利</div><div class="v-body">可以按「上一段」再看一次，<br>或關閉後查看完整時間表。</div>`,
+    say:'說明結束，祝您檢查順利。如果要再看一次，可以按上一段，或關閉後查看完整的時間表。' });
+  return out;
+}
+
+const PL = { slides:[], idx:0, playing:false, gen:0, timer:null };
+function openPlayer(){
+  if(!PLAN) return;
+  stopSpeech();
+  PL.slides = buildSlides(); PL.idx = 0; PL.playing = true;
+  $('#player').classList.remove('hidden'); document.body.classList.add('noscroll');
+  try{ const el=document.documentElement; el.requestFullscreen && el.requestFullscreen().catch(()=>{}); }catch(e){}
+  showSlide();
+}
+function closePlayer(){
+  pausePlayer();
+  $('#player').classList.add('hidden'); document.body.classList.remove('noscroll');
+  try{ document.fullscreenElement && document.exitFullscreen().catch(()=>{}); }catch(e){}
+}
+function haltAudio(){ PL.gen++; clearTimeout(PL.timer); try{ speechSynthesis.cancel(); }catch(e){} }
+function showSlide(){
+  haltAudio();
+  const sl = PL.slides[PL.idx], n = PL.slides.length;
+  const box = $('#pSlide');
+  box.className = 'p-slide ' + (sl.cls||''); box.innerHTML = sl.h;
+  void box.offsetWidth; box.style.animation='none'; void box.offsetWidth; box.style.animation='';
+  $('#pCap').textContent = sl.say;
+  $('#pCount').textContent = `${PL.idx+1} / ${n}`;
+  $('#pBar').style.width = ((PL.idx+1)/n*100)+'%';
+  $('#pPrev').disabled = PL.idx===0;
+  $('#pNext').disabled = PL.idx===n-1;
+  updatePlayBtn();
+  if(PL.playing) speakSlide(PL.gen, sl.say);
+}
+function readTime(t){ return Math.max(4000, t.length*280); }
+function speakSlide(g, text){
+  const next = ()=>{ if(g===PL.gen) PL.timer = setTimeout(()=>{ if(g===PL.gen) advance(); }, 900); };
+  if(!('speechSynthesis' in window)){ PL.timer = setTimeout(()=>{ if(g===PL.gen) advance(); }, readTime(text)); return; }
+  const v = pickVoice('zh');
+  const parts = (text.match(/[^。！？]+[。！？]?/g) || [text]).filter(x=>x.trim());
+  let ended = false;
+  parts.forEach((p,i)=>{
+    const u = new SpeechSynthesisUtterance(p);
+    u.lang='zh-TW'; if(v) u.voice=v; u.rate=0.82;
+    if(i===parts.length-1){
+      u.onend = ()=>{ if(!ended){ ended=true; next(); } };
+      u.onerror = ()=>{ if(!ended && g===PL.gen){ ended=true; PL.timer=setTimeout(()=>{ if(g===PL.gen) advance(); }, readTime(text)); } };
+    }
+    speechSynthesis.speak(u);
+  });
+  // 保險：若裝置語音沒有回應，依字數時間自動翻頁
+  setTimeout(()=>{ if(g===PL.gen && !ended && !speechSynthesis.speaking && !speechSynthesis.pending){ ended=true; next(); } }, readTime(text)+6000);
+}
+function advance(){
+  if(PL.idx < PL.slides.length-1){ PL.idx++; showSlide(); }
+  else { PL.playing=false; haltAudio(); updatePlayBtn(); }
+}
+function pausePlayer(){ PL.playing=false; haltAudio(); updatePlayBtn(); }
+function updatePlayBtn(){
+  const end = PL.idx===PL.slides.length-1 && !PL.playing;
+  $('#pPlay').textContent = PL.playing ? '⏸ 暫停' : (end ? '↻ 從頭播放' : '▶ 繼續播放');
+}
+$('#pPlay').addEventListener('click', ()=>{
+  if(PL.playing){ pausePlayer(); return; }
+  if(PL.idx===PL.slides.length-1) PL.idx=0;
+  PL.playing=true; showSlide();
+});
+$('#pPrev').addEventListener('click', ()=>{ if(PL.idx>0){ PL.idx--; showSlide(); } });
+$('#pNext').addEventListener('click', ()=>{ if(PL.idx<PL.slides.length-1){ PL.idx++; showSlide(); } });
+$('#pClose').addEventListener('click', closePlayer);
+document.addEventListener('keydown', e=>{
+  if($('#player').classList.contains('hidden')) return;
+  if(e.key==='Escape') closePlayer();
+  else if(e.key==='ArrowRight') $('#pNext').click();
+  else if(e.key==='ArrowLeft') $('#pPrev').click();
+  else if(e.key===' '){ e.preventDefault(); $('#pPlay').click(); }
+});
+$('#editBtn').addEventListener('click', ()=>{
+  stopSpeech();
+  $('#result').classList.add('hidden'); $('#formCard').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+});
+
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.style.display='block';
+  clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none', 4500);
+}
+
+/* 還原上次輸入 */
+(function(){
+  const fs = store.get('bp_fs'); if(fs){ const b=document.querySelector(`[data-fs="${fs}"]`); b&&b.click(); }
+  const inp = store.get('bp_input');
+  if(inp){
+    setChoice('type',inp.type); setChoice('diet',inp.diet); setChoice('cond',inp.cond);
+    $('#examDate').value=inp.date; $('#ampm').value=inp.ampm; $('#hh').value=inp.hh; $('#mm').value=inp.mm;
+  }
+  setInterval(()=>{ if(PLAN) renderNext(); }, 60000);
+})();
+</script>
+</body>
+</html>
